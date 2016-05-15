@@ -6,4 +6,5 @@ This project is a stand-alone process for reading data from Kafka and inserting 
 The neo4j-ingest-ingester is the executable jar. To build it run the following:
 
 $> cd neo4j-ingest-ingester
+
 $> mvn clean install assembly:single
