@@ -15,6 +15,9 @@ class KryoMessageSerialization extends MessageSerialization {
   private val kryo = new ScalaKryoInstantiator()
     .setRegistrationRequired(false)
     .newKryo
+    
+  kryo.register(classOf[NodeMessage])
+  kryo.register(classOf[RelationshipMessage])
 
   override def write(out: OutputStream, messages: List[GeneralMessage]) {
     withResource(new Output(out), (output: Output) => {
