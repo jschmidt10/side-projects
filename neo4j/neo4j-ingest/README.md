@@ -23,5 +23,3 @@ Here are some sample kafka consumer properties to get you started. All of the co
     enable.auto.commit:true
     auto.commit.interval.ms:1000
     auto.offset.reset:earliest
-
-
