@@ -8,7 +8,7 @@ import github.jschmidt10.neo4j.message.RelationshipMessage
 
 object Neo4jTesting {
   def main(args: Array[String]) {
-    val driver = GraphDatabase.driver("bolt://192.168.99.100:7687", AuthTokens.basic("neo4j", "neo4j123"))
+    val driver = GraphDatabase.driver("bolt://192.168.99.100:7687", AuthTokens.none())
     val session = driver.session()
 
     val c1 = MessageCypher(NodeMessage("234567890", "Person", Map("name" -> "Tommy", "age" -> 31)))

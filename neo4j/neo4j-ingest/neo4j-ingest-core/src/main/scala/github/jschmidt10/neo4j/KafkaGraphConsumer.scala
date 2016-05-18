@@ -51,9 +51,6 @@ class KafkaGraphConsumer(serialization: MessageSerialization) extends GraphConsu
     consumer = new KafkaConsumer(properties)
     consumer.subscribe(List(topic))
 
-    println("================ Metrics ================")
-    consumer.metrics().mapValues(m => println(s"${m.metricName} = ${m.value}"))
-
     initialized = true
   }
 

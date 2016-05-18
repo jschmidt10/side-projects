@@ -8,7 +8,7 @@ import java.util.Properties
 
 object ProducerTesting {
   def main(args: Array[String]) {
-    val broker = "192.168.99.100:32770"
+    val broker = "192.168.99.100:32769"
     val groupId = "testGroup1"
 
     val properties = new Properties
