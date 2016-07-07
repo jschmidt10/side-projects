@@ -16,8 +16,8 @@ public class MultithreadReducerTest {
 
 	@Test
 	public void shouldPreserveConsistency() throws Exception {
-		int numThreads = 10;
-		int numKeys = 10000000;
+		int numThreads = 20;
+		int numKeys = 20000000;
 		int maxKey = 200;
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(numThreads, numThreads, 0, TimeUnit.MICROSECONDS,
