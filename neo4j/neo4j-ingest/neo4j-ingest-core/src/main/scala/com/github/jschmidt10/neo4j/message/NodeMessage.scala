@@ -8,8 +8,8 @@ import com.github.jschmidt10.neo4j.PreConditions._
  * Each node must have a surrogateId and one or more labels.
  */
 case class NodeMessage(
-  val id: String,
-  val labels: List[String],
+  id: String,
+  labels: List[String],
   override val properties: Map[String, Any])
     extends GeneralMessage("node", id, labels, null, null, null, null, null, properties) {
 

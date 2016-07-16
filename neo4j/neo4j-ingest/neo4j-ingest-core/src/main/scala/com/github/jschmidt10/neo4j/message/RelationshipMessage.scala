@@ -7,10 +7,10 @@ import com.github.jschmidt10.neo4j.PreConditions._
  * for locating the source and destination nodes (id's and one label).
  */
 case class RelationshipMessage(
-  val fromId: String,
-  val fromLabel: String,
-  val toId: String,
-  val toLabel: String,
+  fromId: String,
+  fromLabel: String,
+  toId: String,
+  toLabel: String,
   override val relType: String,
   override val properties: Map[String, Any])
     extends GeneralMessage("relationship", null, null, fromId, fromLabel, toId, toLabel, relType, properties) {
