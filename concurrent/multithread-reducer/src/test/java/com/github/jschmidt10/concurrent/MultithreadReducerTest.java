@@ -1,4 +1,4 @@
-package github.jschmidt10.concurrent;
+package com.github.jschmidt10.concurrent;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class MultithreadReducerTest {
 
 	@Test
 	public void shouldPreserveConsistency() throws Exception {
-		int numThreads = 20;
+		int numThreads = 4;
 		int numKeys = 20000000;
 		int maxKey = 200;
 
