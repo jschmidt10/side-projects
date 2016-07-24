@@ -10,6 +10,10 @@
 
 	<artifactId>neo4j-ingest-core</artifactId>
 
+	<name>Neo4J Ingest Core</name>
+	<description>The core functionality and APIs for neo4j-ingest.</description>
+	<url>https://github.com/jschmidt10/side-projects/tree/master/neo4j/neo4j-ingest/neo4j-ingest-core</url>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.kafka</groupId>

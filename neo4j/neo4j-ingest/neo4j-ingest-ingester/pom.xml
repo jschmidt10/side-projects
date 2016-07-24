@@ -10,6 +10,10 @@
 
     <artifactId>neo4j-ingest-ingester</artifactId>
 
+    <name>Neo4J Ingest Ingester</name>
+    <description>The server-side process for the neo4j-ingest project.</description>
+    <url>https://github.com/jschmidt10/side-projects/tree/master/neo4j/neo4j-ingest/neo4j-ingest-ingester</url>
+
     <dependencies>
         <dependency>
             <groupId>com.github.jschmidt10</groupId>
