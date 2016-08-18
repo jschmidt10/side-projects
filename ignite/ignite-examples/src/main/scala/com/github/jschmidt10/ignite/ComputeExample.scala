@@ -18,7 +18,7 @@ object ComputeExample {
     val ignite = Ignition.start(conf)
 
     val allGreetings = ignite.compute().broadcast(new IgniteCallable[String] {
-      override def call(): String = s"Howdy from ${InetAddress.getLocalHost.getHostAddress}"
+      override def call(): String = s"Howdy from ${ignite.cluster().localNode().id()}"
     })
 
     allGreetings

@@ -13,9 +13,8 @@ RUN yum update && \
 RUN curl https://archive.apache.org/dist/ignite/1.6.0/apache-ignite-fabric-1.6.0-bin.zip -o /apache-ignite-fabric-1.6.0-bin.zip && \
     unzip /apache-ignite-fabric-1.6.0-bin.zip
 
-RUN mkdir /etc/ignite && \
-    mkdir /etc/ignite/conf
-
+RUN mkdir -p /etc/ignite/conf
 VOLUME /etc/ignite/conf
+
 EXPOSE 47500
 CMD /apache-ignite-fabric-1.6.0-bin/bin/ignite.sh file:///etc/ignite/conf/$IGNITE_CONF
