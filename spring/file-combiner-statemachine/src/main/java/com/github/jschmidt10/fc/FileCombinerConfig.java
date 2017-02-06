@@ -10,7 +10,7 @@ import org.springframework.statemachine.config.StateMachineBuilder;
 import java.util.EnumSet;
 
 /**
- * Spring config.
+ * Configuration which creates our StateMachine and then creates the FileCombiner to use it.
  */
 @Configuration
 public class FileCombinerConfig {

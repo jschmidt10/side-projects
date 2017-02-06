@@ -1,6 +1,5 @@
 package com.github.jschmidt10.fc;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.statemachine.StateMachine;
@@ -24,7 +23,6 @@ public class FileCombiner implements AutoCloseable {
     private final long fileSizeLimit = 256;
     private long combinedSize = 0;
 
-    @Autowired
     public FileCombiner(StateMachine<FileCombiner.State, FileCombiner.Event> sm) {
         this.sm = sm;
         sm.start();
@@ -50,20 +48,25 @@ public class FileCombiner implements AutoCloseable {
                     }
                     break;
                 case WRITING_DATA:
-                    System.out.println("Writing new file of size: " + combinedSize + " MB");
-                    combinedSize = 0;
-                    sm.sendEvent(Event.WRITE_FINISHED);
+                    try {
+                        System.out.println("Writing new file of size: " + combinedSize + " MB");
+                        combinedSize = 0;
+                        sm.sendEvent(Event.WRITE_FINISHED);
+                    } catch (Exception e) {
+                        System.err.println("Error during writing output");
+                        sm.sendEvent(Event.ERROR_OCCURRED);
+                    }
                     break;
                 case ERROR:
                     System.err.println("Error occurred during processing, stopping...");
-                    sm.stop();
+                    close();
                     System.exit(1);
             }
         }
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         try {
             sm.stop();
         } catch (Exception e) {
