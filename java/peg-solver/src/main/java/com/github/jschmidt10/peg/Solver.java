@@ -1,6 +1,8 @@
 package com.github.jschmidt10.peg;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Driver for the brute force solver.
@@ -19,8 +21,11 @@ public class Solver {
 
         long start = System.currentTimeMillis();
 
-        initialBoard.getAvailableJumps()
-                .forEach(jump -> queue.add(new Tuple2<>(initialBoard.clone(), jump)));
+        initialBoard
+                .getAvailableJumps()
+                .stream()
+                .map(j -> new Tuple2<>(initialBoard.clone(), j))
+                .forEach(queue::add);
 
         int numIterations = 0;
 
@@ -38,7 +43,10 @@ public class Solver {
             if (jumps.isEmpty()) {
                 completed.add(board);
             } else {
-                jumps.forEach(j -> queue.add(new Tuple2<>(board.clone(), j)));
+                jumps
+                        .stream()
+                        .map(j -> new Tuple2<>(board.clone(), j))
+                        .forEach(queue::add);
             }
         }
 

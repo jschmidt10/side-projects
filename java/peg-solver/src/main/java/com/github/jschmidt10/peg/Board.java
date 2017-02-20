@@ -1,5 +1,6 @@
 package com.github.jschmidt10.peg;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,7 +76,7 @@ public class Board {
 
     private boolean[] holes = new boolean[NUM_HOLES];
     private final int startHole;
-    private Collection<Jump> jumps = new LinkedList<>();
+    private Collection<Jump> jumps = new ArrayList<>(16);
 
     /**
      * Creates a new Board
@@ -112,7 +113,7 @@ public class Board {
      * @param jump
      */
     public void apply(Jump jump) {
-        ensure(isValidJump(jump.from, jump.over, jump.to), "Received an invalid jump: " + jump);
+        ensure(isValidJump(jump.from, jump.over, jump.to), "Received an invalid jump");
 
         holes[jump.from] = false;
         holes[jump.over] = false;

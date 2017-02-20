@@ -5,8 +5,7 @@ package com.github.jschmidt10.peg;
  */
 public class Ensure {
 
-    private Ensure() {
-    }
+    private Ensure() {}
 
     /**
      * Checks a condition and fails if it is not met.
