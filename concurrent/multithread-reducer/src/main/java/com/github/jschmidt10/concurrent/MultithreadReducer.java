@@ -1,13 +1,9 @@
 package com.github.jschmidt10.concurrent;
 
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The class is used to have each thread locally collect and reduce key value
@@ -16,17 +12,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public abstract class MultithreadReducer<K, V> {
 
-    private final Map<Long, Map<K, V>> allKeyValues;
-    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private final Lock readLock = rwLock.readLock();
-    private final Lock writeLock = rwLock.writeLock();
+    private final ThreadLocal<Map<K, V>> localKeyValues;
 
     public MultithreadReducer() {
-        allKeyValues = new HashMap<>();
-    }
-
-    public MultithreadReducer(int numThreads) {
-        allKeyValues = new HashMap<>(numThreads * 2);
+        this.localKeyValues = new ThreadLocal<>();
     }
 
     /**
@@ -47,71 +36,27 @@ public abstract class MultithreadReducer<K, V> {
      * @param value
      */
     public void reduceLocal(K key, V value) {
-        Map<K, V> localKeyValues = getOrCreateLocal();
-
-        V accumulator = localKeyValues.get(key);
-
-        if (accumulator == null) {
-            localKeyValues.put(key, value);
-        } else {
-            localKeyValues.put(key, reduce(key, accumulator, value));
+        if (localKeyValues.get() == null) {
+            localKeyValues.set(new HashMap<>());
         }
+
+        localKeyValues
+                .get()
+                .merge(key, value, (a, v) -> reduce(key, a, v));
     }
 
     /**
-     * Reduces all of the thread's maps together.
+     * Reduces this thread's counts into the given global count map.
      *
+     * @param globalKeyValues
      * @return globally reduced map
      */
-    public synchronized Map<K, V> reduceGlobal() {
-        Map<K, V> global = new TreeMap<>();
+    public void reduceGlobal(ConcurrentHashMap<K, V> globalKeyValues) {
+        for (Entry<K, V> entry : localKeyValues.get().entrySet()) {
+            K key = entry.getKey();
+            V value = entry.getValue();
 
-        for (Map<K, V> threadMap : allKeyValues.values()) {
-            for (Entry<K, V> entry : threadMap.entrySet()) {
-                K key = entry.getKey();
-                V accumulator = global.get(key);
-
-                if (accumulator == null) {
-                    global.put(key, entry.getValue());
-                } else {
-                    global.put(key, reduce(key, accumulator, entry.getValue()));
-                }
-            }
-        }
-
-        return global;
-    }
-
-    private Map<K, V> getOrCreateLocal() {
-        Map<K, V> localKeyValues = null;
-
-        localKeyValues = getLocalMap();
-
-        if (localKeyValues == null) {
-            localKeyValues = createLocalMap();
-        }
-
-        return localKeyValues;
-    }
-
-    private Map<K, V> createLocalMap() {
-        Map<K, V> localKeyValues = new TreeMap<K, V>();
-        writeLock.lock();
-        try {
-            allKeyValues.put(Thread.currentThread().getId(), localKeyValues);
-            return localKeyValues;
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    private Map<K, V> getLocalMap() {
-        readLock.lock();
-        try {
-            Map<K, V> localKeyValues = allKeyValues.get(Thread.currentThread().getId());
-            return localKeyValues;
-        } finally {
-            readLock.unlock();
+            globalKeyValues.merge(key, value, (a, v) -> reduce(key, a, v));
         }
     }
 }
