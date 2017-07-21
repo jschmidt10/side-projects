@@ -46,7 +46,7 @@ public abstract class MultithreadReducer<K, V> {
     }
 
     /**
-     * Reduces this thread's counts into the given global count map.
+     * Reduces this thread's counts into the given global key/value map.
      *
      * @param globalKeyValues
      * @return globally reduced map
