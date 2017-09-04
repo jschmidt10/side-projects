@@ -96,10 +96,6 @@ public class DummyHistoryServer implements AutoCloseable {
     private final Server server;
     private final int port;
 
-    public String getUrl() {
-        return "http://localhost:" + port;
-    }
-
     @Override
     public void close() throws Exception {
         server.stop();

@@ -13,23 +13,26 @@ import java.util.Collection;
  */
 public class MetricsDriver {
 
-    @Parameter(names = "--history", description = "The Hadoop History Server's REST url (e.g. 'http://localhost:8088/ws/v1/history/mapreduce/jobs/')", required = true)
-    private String historyUrl;
+    @Parameter(names = "--history-host", description = "The hostname running the Hadoop History server.", required = true)
+    private String historyHost;
 
-    @Parameter(names = "--graphiteHost", description = "The hostname running Graphite", required = true)
+    @Parameter(names = "--history-port", description = "The port that Hadoop History server is listening on. (defaults to 8088)", required = false)
+    private int historyPort = 8088;
+
+    @Parameter(names = "--graphite-host", description = "The hostname running Graphite", required = true)
     private String graphiteHost;
 
-    @Parameter(names = "--graphitePort", description = "The port that Graphite is listening on (defaults to 2003)", required = false)
+    @Parameter(names = "--graphite-port", description = "The port that Graphite is listening on (defaults to 2003)", required = false)
     private int graphitePort = 2003;
 
     @Parameter(names = "--job", description = "The job id to record metrics for", required = true)
     private String jobId;
 
-    @Parameter(names = "--metricPrefix", description = "The prefix to use for generated metrics", required = true)
+    @Parameter(names = "--metric-prefix", description = "The prefix to use for generated metrics", required = true)
     private String prefix;
 
     public void run() throws Exception {
-        HistoryMetricsGatherer gatherer = new HistoryMetricsGatherer(prefix, historyUrl);
+        HistoryMetricsGatherer gatherer = new HistoryMetricsGatherer(historyHost, historyPort, prefix);
         GraphiteClient graphiteClient = GraphiteClientFactory.defaultGraphiteClient(graphiteHost, graphitePort);
 
         Collection<CarbonMetric> metrics = null;

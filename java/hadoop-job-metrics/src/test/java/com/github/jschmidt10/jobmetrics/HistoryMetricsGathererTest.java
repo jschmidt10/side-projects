@@ -24,7 +24,7 @@ public class HistoryMetricsGathererTest {
 
     @Test
     public void shouldFetchJobMetrics() {
-        HistoryMetricsGatherer gatherer = new HistoryMetricsGatherer("prefix", server.getUrl());
+        HistoryMetricsGatherer gatherer = new HistoryMetricsGatherer("localhost", server.getPort(), "prefix");
         Collection<CarbonMetric> metrics = gatherer.gather(JOB_ID);
 
         assertMetric(metrics, "prefix.elapsedTime", 135577); // finishedTime - startTime

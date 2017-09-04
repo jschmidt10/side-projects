@@ -27,8 +27,9 @@ public class HistoryMetricsGatherer {
 
     private final static List<Extractor> extractors = Arrays.asList(new ElapsedJobTimeExtractor(), new FieldExtractor(".avgReduceTime", "avgReduceTime"), new FieldExtractor(".avgMapTime", "avgMapTime"));
 
+    private final String host;
+    private final int port;
     private final String prefix;
-    private final String baseUrl;
 
 
     /**
@@ -38,7 +39,7 @@ public class HistoryMetricsGatherer {
      * @return metrics
      */
     public Collection<CarbonMetric> gather(String jobId) {
-        JsonNode rootNode = curl(httpGet(jobId));
+        JsonNode rootNode = curlJobHistory(jobId);
         JsonNode jobNode = rootNode.get("job");
 
         long metricTime = jobNode.get("finishTime").asLong() / 1000;
@@ -46,18 +47,15 @@ public class HistoryMetricsGatherer {
         return extractors.stream().map(e -> e.extract(prefix, metricTime, jobNode)).collect(Collectors.toList());
     }
 
-    private HttpGet httpGet(String jobId) {
-        String fullUrl = baseUrl + "/" + jobId;
-        return new HttpGet(fullUrl);
-    }
+    private JsonNode curlJobHistory(String jobId) {
+        String url = String.format("http://%s:%d/ws/v1/history/mapreduce/jobs/%s", host, port, jobId);
 
-    private JsonNode curl(HttpGet request) {
-        try (CloseableHttpResponse response = client.execute(request)) {
+        try (CloseableHttpResponse response = client.execute(new HttpGet(url))) {
             return mapper.readValue(response.getEntity().getContent(), JsonNode.class);
         } catch (JsonParseException e) {
-            throw new RuntimeException("Could not parse JSON response from " + request);
+            throw new RuntimeException("Could not parse JSON response from " + url);
         } catch (IOException e) {
-            throw new RuntimeException("Failed during HTTP get: " + request);
+            throw new RuntimeException("Failed during HTTP GET to " + url);
         }
     }
 }
