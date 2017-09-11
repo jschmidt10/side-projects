@@ -22,10 +22,10 @@ public class HistoryClient {
     private final int port;
 
     /**
-     * Gathers job metrics bound for Carbon.
+     * Fetches the job history for the given job id.
      *
      * @param jobId
-     * @return metrics
+     * @return job history
      * @throws IOException when an error occurs executing the HTTP request or parsing the response.
      */
     public JobHistory fetch(String jobId) throws IOException {
