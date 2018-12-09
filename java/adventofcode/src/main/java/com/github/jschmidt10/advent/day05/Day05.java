@@ -3,6 +3,9 @@ package com.github.jschmidt10.advent.day05;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Day05 {
 
@@ -10,8 +13,14 @@ public class Day05 {
 
     public static void main(String[] args) throws IOException {
         String filename = "src/main/resources/day05_inputs.txt";
+//        String filename = "src/main/resources/day05_test.txt";
 //        solvePart1(filename);
+
+        long start = System.currentTimeMillis();
         solvePart2(filename);
+        long end = System.currentTimeMillis();
+
+        System.out.println("Runtime: " + (end - start) + " ms");
     }
 
     private static void solvePart2(String filename) throws IOException {
@@ -23,9 +32,9 @@ public class Day05 {
         int shortestChain = Integer.MAX_VALUE;
         for (char c = 'a'; c <= 'z'; c++) {
             Polymer newPolymer = polymer.removeUnit(c);
-            while (newPolymer.react()) ;
-            if (newPolymer.chain.length() < shortestChain) {
-                shortestChain = newPolymer.chain.length();
+            newPolymer.react();
+            if (newPolymer.chain.size() < shortestChain) {
+                shortestChain = newPolymer.chain.size();
             }
         }
 
@@ -35,55 +44,62 @@ public class Day05 {
     private static void solvePart1(String filename) throws IOException {
         String line = Files.lines(Paths.get(filename)).findFirst().get();
         Polymer polymer = new Polymer(line);
-
-        while (polymer.react()) ;
-
-        System.out.println("Done reacting: " + polymer.chain.length());
+        polymer.react();
+        System.out.println("Done reacting: " + polymer.chain.size());
     }
 
     static class Polymer {
 
-        String chain;
+        List<Character> chain;
 
         Polymer(String chain) {
+            this.chain = new ArrayList<>(chain.length());
+            for (char c : chain.toCharArray()) {
+                this.chain.add(c);
+            }
+        }
+
+        Polymer(List<Character> chain) {
             this.chain = chain;
         }
 
         Polymer removeUnit(char remove) {
             char removeUpper = Character.toUpperCase(remove);
-            char[] leftover = new char[chain.length()];
-            int next = 0;
+            List<Character> leftover = new ArrayList<>(chain.size());
 
-            for (int i = 0; i < chain.length(); i++) {
-                char c = chain.charAt(i);
+            for (int i = 0; i < chain.size(); i++) {
+                char c = chain.get(i);
                 if (Character.toUpperCase(c) != removeUpper) {
-                    leftover[next++] = c;
+                    leftover.add(c);
                 }
             }
 
-            return new Polymer(new String(leftover, 0, next));
+            return new Polymer(leftover);
         }
 
-        boolean react() {
-            for (int i = 0; i < chain.length() - 1; i++) {
-                char first = chain.charAt(i);
-                char second = chain.charAt(i + 1);
+        void react() {
+            for (int i = 0; i < chain.size() - 1; i++) {
+                char left = chain.get(i);
+                char right = chain.get(i + 1);
 
-                char upperFirst = Character.toUpperCase(first);
-                char upperSecond = Character.toUpperCase(second);
-
-                if (first != second && upperFirst == upperSecond) {
-                    this.chain = chain.substring(0, i) + chain.substring(i + 2, chain.length());
-                    return true;
+                if (isReactive(left, right)) {
+                    chain.remove(i);
+                    chain.remove(i);
+                    i -= 2;
+                    if (i < -1) {
+                        i = -1;
+                    }
                 }
             }
+        }
 
-            return false;
+        private boolean isReactive(char l, char r) {
+            return l != r && Character.toUpperCase(l) == Character.toUpperCase(r);
         }
 
         @Override
         public String toString() {
-            return "Polymer(" + chain + ")";
+            return "Polymer(" + chain.stream().map(c -> c.toString()).collect(Collectors.joining()) + ")";
         }
     }
 }
