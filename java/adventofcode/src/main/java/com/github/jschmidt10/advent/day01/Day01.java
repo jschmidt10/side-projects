@@ -1,4 +1,4 @@
-package com.github.jschmidt10.advent;
+package com.github.jschmidt10.advent.day01;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

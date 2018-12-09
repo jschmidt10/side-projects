@@ -1,4 +1,4 @@
-package com.github.jschmidt10.advent;
+package com.github.jschmidt10.advent.day02;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
