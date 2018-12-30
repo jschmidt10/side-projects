@@ -10,19 +10,22 @@
 <body>
     <h1>JSON to CSV</h1>
 
+    <p>Pick a JSON file to convert to CSV. Then tell us where to put and name the result.</p>
+
     <div id="convertForm">
+
         <form name="convert" onsubmit="JavaScript:submitForm(event)">
 
             <div>
                 <label for="inputFile">Choose a JSON file to convert: </label>
                 <button onclick="JavaScript:pickFile(event,'inputFile')">Browse</button>
-                <span id="inputFile"></span>
+                <input class="text" id="inputFile" name="inputFile" />
             </div>
 
             <div>
-                <label for="outputDir">Choose the directory for the CSV file: </label>
+                <label for="outputDir">Choose a directory for the result: </label>
                 <button onclick="JavaScript:pickDirectory(event,'outputDir')">Browse</button>
-                <span id="outputDir"></span>
+                <input class="text" id="outputDir" name="outputDir" />
             </div>
 
             <div>
@@ -31,8 +34,8 @@
             </div>
 
             <div>
-                <button id="submit" onclick="">Submit</button>
-                <button id="cancel" onclick="">Cancel</button>
+                <button id="submit">Submit</button>
+                <button id="cancel" onclick="clearForm(event)">Clear</button>
             </div>
 
             <div>
@@ -40,7 +43,9 @@
                 <ul class="error" id="errorList"></ul>
             </div>
         </form>
+
     </div>
+
     <script src="render.js"></script>
 </body>
 

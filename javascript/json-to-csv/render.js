@@ -10,7 +10,7 @@ function pickFile(event, elementId) {
     event.preventDefault();
     let selected = dialog.showOpenDialog({ properties: [ 'openFile' ] });
     if (selected) {
-        document.getElementById(elementId).innerHTML = selected;
+        document.getElementById(elementId).value = selected;
     }
 }
 
@@ -21,7 +21,7 @@ function pickDirectory(event, elementId) {
     event.preventDefault();
     let selected = dialog.showOpenDialog({ properties: [ 'openDirectory' ] });
     if (selected) {
-        document.getElementById(elementId).innerHTML = selected;
+        document.getElementById(elementId).value = selected;
     }
 }
 
@@ -64,6 +64,19 @@ function validateField(field, errorMsg) {
 }
 
 /*
+ * Clears out the converter form
+ */
+function clearForm(event) {
+    event.preventDefault();
+
+    document.getElementById("inputFile").value = "";
+    document.getElementById("outputDir").value = "";
+    document.getElementById("outputFile").value = "";
+    document.getElementById("errorList").innerHTML = "";
+    document.getElementById("successList").innerHTML = "";
+}
+
+/*
  * Validates the user input and performs the conversion.
  */
 function submitForm(event) {
@@ -71,8 +84,8 @@ function submitForm(event) {
 
     let form = {};
 
-    form.inputFile = document.getElementById("inputFile").innerHTML;
-    form.outputDir = document.getElementById("outputDir").innerHTML;
+    form.inputFile = document.getElementById("inputFile").value;
+    form.outputDir = document.getElementById("outputDir").value;
     form.outputFile = document.getElementById("outputFile").value;
     form.errorList = document.getElementById("errorList");
     form.successList = document.getElementById("successList");
