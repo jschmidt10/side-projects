@@ -1,0 +1,36 @@
+{
+  "name": "json-to-csv",
+  "version": "1.0.0",
+  "description": "Convert a JSON file into a CSV file!",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jschmidt10/side-projects.git"
+  },
+  "keywords": [
+    "json",
+    "csv",
+    "convert",
+    "converter"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jschmidt10/side-projects/issues"
+  },
+  "homepage": "https://github.com/jschmidt10/side-projects#readme",
+  "devDependencies": {
+    "electron": "^4.0.0",
+    "electron-builder": "^20.38.4"
+  },
+  "dependencies": {
+    "collections": "^5.1.6",
+    "json2csv": "^4.3.2",
+    "util": "^0.11.1"
+  }
+}

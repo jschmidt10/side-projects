@@ -1,0 +1,25 @@
+{
+    "name": "Object",
+    "age": 20,
+    "children": [
+        {
+            "name": "Child1",
+            "children": [
+                {
+                    "name": "Grandchild1"
+                },
+                {
+                    "name": "Grandchild2"
+                }
+            ]
+        },
+        {
+            "name": "Child2",
+            "children": [
+                {
+                    "name": "Grandchild3"
+                }
+            ]
+        }
+    ]
+}

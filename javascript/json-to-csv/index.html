@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>JSON to CSV</title>
+    <link rel="stylesheet" type="text/css" href="j2c.css" />
+</head>
+
+<body>
+    <h1>JSON to CSV</h1>
+
+    <div id="convertForm">
+        <form name="convert" onsubmit="JavaScript:submitForm(event)">
+
+            <div>
+                <label for="inputFile">Choose a JSON file to convert: </label>
+                <button onclick="JavaScript:pickFile(event,'inputFile')">Browse</button>
+                <span id="inputFile"></span>
+            </div>
+
+            <div>
+                <label for="outputDir">Choose the directory for the CSV file: </label>
+                <button onclick="JavaScript:pickDirectory(event,'outputDir')">Browse</button>
+                <span id="outputDir"></span>
+            </div>
+
+            <div>
+                <label for="outputFile">Name the new CSV file: </label>
+                <input type="text" id="outputFile" name="outputFile" />
+            </div>
+
+            <div>
+                <button id="submit" onclick="">Submit</button>
+                <button id="cancel" onclick="">Cancel</button>
+            </div>
+
+            <div>
+                <ul class="success" id="successList"></ul>
+                <ul class="error" id="errorList"></ul>
+            </div>
+        </form>
+    </div>
+    <script src="render.js"></script>
+</body>
+
+</html>
