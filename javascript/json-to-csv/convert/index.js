@@ -1,15 +1,24 @@
 "use strict";
 
 const json2csv = require("json2csv");
-const uniqFields = require("./uniqfields");
-const unwindFields = require("./unwindfields");
+
+const FieldWalker = require("./fieldwalker");
+const UniqueFieldVisitor = require("./unique-field-visitor");
+const UnwindFieldVisitor = require("./unwind-field-visitor");
 
 module.exports = function (json) {
     let obj = JSON.parse(json);
+
+    let fw = new FieldWalker();
+    let uniqFieldVisitor = new UniqueFieldVisitor();
+    let unwindFieldVisitor = new UnwindFieldVisitor();
+
+    fw.walk(obj, [ uniqFieldVisitor, unwindFieldVisitor ]);
+
     return json2csv.parse(obj,
         {
-            fields: uniqFields(obj),
+            fields: uniqFieldVisitor.fields,
             flatten: true,
-            unwind: unwindFields(obj)
+            unwind: unwindFieldVisitor.fields
         });
 };

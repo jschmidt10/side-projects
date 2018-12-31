@@ -20,7 +20,7 @@ function createWindow() {
   win.loadFile("index.html");
 
   // Open the DevTools.
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on("closed", () => {
@@ -40,9 +40,9 @@ app.on("ready", createWindow);
 app.on("window-all-closed", () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== "darwin") {
+  // if (process.platform !== "darwin") {
     app.quit();
-  }
+  // }
 });
 
 app.on("activate", () => {
@@ -62,5 +62,10 @@ ipcMain.on("submit", (event, inputFile, outputFile) => {
     .then((data) => convert(data))
     .then((csv) => writeFile(outputFile, csv))
     .then((res) => win.webContents.send("success", `Created ${outputFile}`))
-    .catch((err) => win.webContents.send("failure", err));
+    .catch((err) => {
+      if (err.code === "ENOENT") {
+        err = "Could not find file: " + inputFile;
+      }
+      win.webContents.send("failure", err);
+    });
 });

@@ -100,5 +100,5 @@ function submitForm(event) {
     }
 }
 
-ipcRenderer.on("failure", (event, err) => addMessage("errorList", err));
+ipcRenderer.on("failure", (event, err) => addMessage("errorList", JSON.stringify(err)));
 ipcRenderer.on("success", (event, msg) => addMessage("successList", msg));

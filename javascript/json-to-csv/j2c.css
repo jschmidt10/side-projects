@@ -1,7 +1,39 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #252525;
+    color: white;
+    width: 75%;
+}
+
+h1 {
+    color: #e6c96d;
+}
+
+label {
+    color: #6beeff;
+}
+
+button {
+    color: white;
+    background-color: #444040;
+}
+
+input {
+    width: 75%;
+}
+
 .error {
-    color: #b30000;
+    color: #ff4141;
 }
 
 .success {
-    color: #00b311;
+    color: #27cc37;
+}
+
+.grid {
+    display: grid;
+}
+
+.row {
+    margin: 0.8em 0;
 }

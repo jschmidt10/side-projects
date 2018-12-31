@@ -10,40 +10,54 @@
 <body>
     <h1>JSON to CSV</h1>
 
-    <p>Pick a JSON file to convert to CSV. Then tell us where to put and name the result.</p>
+    <p>Pick a JSON file to convert to CSV. Then tell us where to put and what to name the result.</p>
 
-    <div id="convertForm">
+    <section class="grid">
 
         <form name="convert" onsubmit="JavaScript:submitForm(event)">
 
-            <div>
-                <label for="inputFile">Choose a JSON file to convert: </label>
-                <button onclick="JavaScript:pickFile(event,'inputFile')">Browse</button>
-                <input class="text" id="inputFile" name="inputFile" />
+            <div class="row">
+                <div class="form-label-col">
+                    <label for="inputFile">Choose a JSON file to convert: </label>
+                </div>
+                <div class="form-input-col">
+                    <input class="text" id="inputFile" name="inputFile" />
+                    <button onclick="JavaScript:pickFile(event,'inputFile')">Browse</button>
+                </div>
             </div>
 
-            <div>
-                <label for="outputDir">Choose a directory for the result: </label>
-                <button onclick="JavaScript:pickDirectory(event,'outputDir')">Browse</button>
-                <input class="text" id="outputDir" name="outputDir" />
+            <div class="row">
+                <div class="form-label">
+                    <label for="outputDir">Choose a directory for the result: </label>
+                </div>
+                <div class="-col">
+                    <input class="text" id="outputDir" name="outputDir" />
+                    <button onclick="JavaScript:pickDirectory(event,'outputDir')">Browse</button>
+                </div>
             </div>
 
-            <div>
-                <label for="outputFile">Name the new CSV file: </label>
-                <input type="text" id="outputFile" name="outputFile" />
+            <div class="row">
+                <div class="form-label-col">
+                    <label for="outputFile">Name the new CSV file: </label>
+                </div>
+                <div class="-col">
+                    <input type="text" id="outputFile" name="outputFile" />
+                </div>
             </div>
 
-            <div>
-                <button id="submit">Submit</button>
-                <button id="cancel" onclick="clearForm(event)">Clear</button>
+            <div class="row">
+                <div class="form-label-col">
+                    <button id="submit">Submit</button>
+                    <button id="cancel" onclick="clearForm(event)">Clear</button>
+                </div>
             </div>
 
-            <div>
-                <ul class="success" id="successList"></ul>
-                <ul class="error" id="errorList"></ul>
-            </div>
         </form>
+    </section>
 
+    <div>
+        <ul class="success" id="successList"></ul>
+        <ul class="error" id="errorList"></ul>
     </div>
 
     <script src="render.js"></script>
