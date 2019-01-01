@@ -47,10 +47,8 @@ function hasErrors() {
  * Validates the user input fields.
  */
 function validateForm() {   
-    validateField(this.inputFile, "You must select an input file!");
+    validateField(this.inputDir, "You must select an input directory!");
     validateField(this.outputDir, "You must select an output directory!");
-    validateField(this.outputFile, "You must enter an output file name!");
-
     return !hasErrors();
 }
 
@@ -69,24 +67,22 @@ function validateField(field, errorMsg) {
 function clearForm(event) {
     event.preventDefault();
 
-    document.getElementById("inputFile").value = "";
+    document.getElementById("inputDir").value = "";
     document.getElementById("outputDir").value = "";
-    document.getElementById("outputFile").value = "";
     document.getElementById("errorList").innerHTML = "";
     document.getElementById("successList").innerHTML = "";
 }
 
 /*
- * Validates the user input and performs the conversion.
+ * Validates the user input and submits data to the backend.
  */
 function submitForm(event) {
     event.preventDefault();
 
     let form = {};
 
-    form.inputFile = document.getElementById("inputFile").value;
+    form.inputDir = document.getElementById("inputDir").value;
     form.outputDir = document.getElementById("outputDir").value;
-    form.outputFile = document.getElementById("outputFile").value;
     form.errorList = document.getElementById("errorList");
     form.successList = document.getElementById("successList");
 
@@ -95,10 +91,11 @@ function submitForm(event) {
     form.successList.innerHTML = "";
 
     if (validateForm.call(form)) {
-        console.log(`Converting ${form.inputFile} into ${form.outputDir}/${form.outputFile}`);
-        ipcRenderer.send("submit", form.inputFile, form.outputDir + "/" + form.outputFile);
+        console.log(`Converting ${form.inputDir} into ${form.outputDir}`);
+        ipcRenderer.send("submit", form.inputDir, form.outputDir);
     }
 }
 
+// Event handlers for results from the backend
 ipcRenderer.on("failure", (event, err) => addMessage("errorList", JSON.stringify(err)));
-ipcRenderer.on("success", (event, msg) => addMessage("successList", msg));
+ipcRenderer.on("success", (event, msgs) => msgs.forEach(m => addMessage("successList", m)));

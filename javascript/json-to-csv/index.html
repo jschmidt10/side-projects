@@ -10,7 +10,10 @@
 <body>
     <h1>JSON to CSV</h1>
 
-    <p>Pick a JSON file to convert to CSV. Then tell us where to put and what to name the result.</p>
+    <p>
+        Pick a directory that contains some JSON files. Then pick a directory for the results.
+        All the JSON files will be converted to a CSV file.
+    </p>
 
     <section class="grid">
 
@@ -18,30 +21,21 @@
 
             <div class="row">
                 <div class="form-label-col">
-                    <label for="inputFile">Choose a JSON file to convert: </label>
+                    <label for="inputDir">Input Directory: </label>
                 </div>
                 <div class="form-input-col">
-                    <input class="text" id="inputFile" name="inputFile" />
-                    <button onclick="JavaScript:pickFile(event,'inputFile')">Browse</button>
+                    <input class="text" id="inputDir" name="inputDir" />
+                    <button onclick="JavaScript:pickDirectory(event,'inputDir')">Browse</button>
                 </div>
             </div>
 
             <div class="row">
                 <div class="form-label">
-                    <label for="outputDir">Choose a directory for the result: </label>
+                    <label for="outputDir">Output Directory: </label>
                 </div>
                 <div class="-col">
                     <input class="text" id="outputDir" name="outputDir" />
                     <button onclick="JavaScript:pickDirectory(event,'outputDir')">Browse</button>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="form-label-col">
-                    <label for="outputFile">Name the new CSV file: </label>
-                </div>
-                <div class="-col">
-                    <input type="text" id="outputFile" name="outputFile" />
                 </div>
             </div>
 

@@ -1,12 +1,7 @@
 "use strict";
 
-const fs = require("fs");
-const { promisify } = require("util");
 const { app, BrowserWindow, ipcMain } = require("electron");
-const convert = require("./convert");
-
-let readFile = promisify(fs.readFile);
-let writeFile = promisify(fs.writeFile);
+const convertdir = require("./convertdir");
 
 // Keep a global reference of the window object, if you don"t, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -56,16 +51,8 @@ app.on("activate", () => {
 /*
  * Performs the json to csv conversion.
  */
-ipcMain.on("submit", (event, inputFile, outputFile) => {
-  console.log(`Converting ${inputFile} into ${outputFile}`);
-  readFile(inputFile)
-    .then((data) => convert(data))
-    .then((csv) => writeFile(outputFile, csv))
-    .then((res) => win.webContents.send("success", `Created ${outputFile}`))
-    .catch((err) => {
-      if (err.code === "ENOENT") {
-        err = "Could not find file: " + inputFile;
-      }
-      win.webContents.send("failure", err);
-    });
+ipcMain.on("submit", (event, inputDir, outputDir) => {
+  convertdir(inputDir, outputDir)
+    .then((res) => win.webContents.send("success", res.map(r => `Created ${r}`)))
+    .catch((err) => win.webContents.send("failure", err));
 });
