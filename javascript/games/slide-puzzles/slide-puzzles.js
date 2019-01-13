@@ -6,7 +6,7 @@ let conf = {
         height: 400
     },
     blocks: {
-        color: "black",
+        color: "#252525",
         trim: {
             color: "white",
             offsetPercent: 0.05,
