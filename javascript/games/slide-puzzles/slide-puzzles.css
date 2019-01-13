@@ -1,0 +1,20 @@
+body {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #F5DEB3;
+}
+
+h1 {
+    color: #191970;
+}
+
+button {
+    background-color: #191970;
+    color: white;
+}
+
+canvas {
+    border: 2px solid black;
+    background: white;
+}
