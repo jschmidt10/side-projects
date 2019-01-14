@@ -3,6 +3,7 @@ body {
     margin: 0 auto;
     text-align: center;
     background-color: #F5DEB3;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 h1 {
@@ -16,5 +17,5 @@ button {
 
 canvas {
     border: 2px solid black;
-    background: white;
+    background: white;  
 }

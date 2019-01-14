@@ -6,7 +6,7 @@ let conf = {
         height: 400
     },
     blocks: {
-        color: "#252525",
+        color: "#3f0202",
         trim: {
             color: "white",
             offsetPercent: 0.05,
@@ -17,7 +17,7 @@ let conf = {
             heightOffsetPerfect: 0.75,
             smallWidthOffsetPercent: 0.3,
             largeWidthOffsetPercent: 0.08,
-            font: "72px Arial"
+            font: "72px Courier New"
         }
     }
 };
@@ -207,4 +207,9 @@ function newPuzzle() {
     new PuzzleRenderer("game-canvas", conf);
 }
 
-document.addEventListener("DOMContentLoaded", newPuzzle);
+function start() {
+    document.getElementById("new-puzzle").addEventListener("click", newPuzzle);
+    newPuzzle();
+}
+
+document.addEventListener("DOMContentLoaded", start);
