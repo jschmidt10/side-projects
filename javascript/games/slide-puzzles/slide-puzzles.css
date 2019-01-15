@@ -19,3 +19,10 @@ canvas {
     border: 2px solid black;
     background: white;  
 }
+
+#new-puzzle {
+    margin-top: 1.5em;
+    font-size: 36px;
+    border: none;
+    padding: 15px;
+}

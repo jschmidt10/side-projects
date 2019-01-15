@@ -23,17 +23,17 @@ let conf = {
 };
 
 // Utility for drawing the puzzle
-function PuzzleRenderer(canvasId, conf) {
-    
-    let puzzle = new Puzzle(conf.rows, conf.cols);
+function PuzzleRenderer(canvasId, conf, forceNew) {
+
+    let puzzle = new Puzzle(conf.rows, conf.cols, forceNew);
     let canvas = document.getElementById(canvasId);
     let ctx = canvas.getContext("2d");
 
     resize(canvas);
     deriveBlockConfs(conf);
 
-    canvas.addEventListener("click", function(event) {
-        let {x, y} = toCanvasCoords(event);
+    canvas.addEventListener("click", function (event) {
+        let { x, y } = toCanvasCoords(event);
         let row = Math.floor(y / conf.blocks.height);
         let col = Math.floor(x / conf.blocks.width);
 
@@ -64,7 +64,7 @@ function PuzzleRenderer(canvasId, conf) {
 
         for (let i = 0; i < puzzle.blocks.length; i++) {
             let block = puzzle.blocks[i];
-            if (block !== undefined) {
+            if (block !== null) {
                 drawBlock(block, i);
             }
         }
@@ -72,7 +72,7 @@ function PuzzleRenderer(canvasId, conf) {
 
     // Draws a block at the specified index
     function drawBlock(block, index) {
-        let {x: row, y: col} = puzzle.getCoord(index);
+        let { x: row, y: col } = puzzle.getCoord(index);
         let x = row * conf.blocks.height;
         let y = col * conf.blocks.width;
 
@@ -88,7 +88,7 @@ function PuzzleRenderer(canvasId, conf) {
         // add label
         ctx.fillStyle = conf.blocks.label.color;
         ctx.font = conf.blocks.label.font;
-        ctx.fillText(block, x + conf.blocks.label.getDx(block), y + conf.blocks.label.dy);       
+        ctx.fillText(block, x + conf.blocks.label.getDx(block), y + conf.blocks.label.dy);
     }
 
     // Derives computed configs
@@ -102,7 +102,7 @@ function PuzzleRenderer(canvasId, conf) {
         conf.blocks.trim.dy = conf.blocks.height * conf.blocks.trim.offsetPercent;
 
         conf.blocks.label.dy = conf.blocks.height * conf.blocks.label.heightOffsetPerfect;
-        conf.blocks.label.getDx = function(block) {
+        conf.blocks.label.getDx = function (block) {
             if (block < 10) {
                 return conf.blocks.width * conf.blocks.label.smallWidthOffsetPercent;
             }
@@ -122,16 +122,16 @@ function PuzzleRenderer(canvasId, conf) {
 }
 
 // The slide puzzle!
-function Puzzle(rows, cols) {
+function Puzzle(rows, cols, forceNew) {
 
     this.rows = rows;
     this.cols = cols;
-    
-    this.blocks = shuffleBlocks(initBlocks(rows * cols));
-    this.emptyIndex = this.blocks.indexOf(undefined);
+
+    this.blocks = getBlocks(rows * cols, forceNew);
+    this.emptyIndex = this.blocks.indexOf(null);
 
     // Checks if you won!
-    this.isComplete = function() {
+    this.isComplete = function () {
         if (this.emptyIndex !== this.blocks.length - 1) {
             return false;
         }
@@ -146,17 +146,18 @@ function Puzzle(rows, cols) {
     }
 
     // Prints the blocks for debugging
-    this.print = function() {
+    this.print = function () {
         for (let i = 0; i < this.blocks.length; i++) {
             console.log(`${i}: ${this.blocks[i]}`);
         }
     }
 
     // Attempts to slide a block if possible (it must be adjacent to the empty spot)
-    this.slide = function(blockIndex) {
+    this.slide = function (blockIndex) {
         if (isAdjacent(this, blockIndex, this.emptyIndex)) {
             swap(this.blocks, blockIndex, this.emptyIndex);
             this.emptyIndex = blockIndex;
+            saveState(this.blocks);
         }
     }
 
@@ -169,17 +170,52 @@ function Puzzle(rows, cols) {
 
     // Checks if two blocks are adjacent
     function isAdjacent(puzzle, index1, index2) {
-        let {x: x1, y: y1} = puzzle.getCoord(index1);
-        let {x: x2, y: y2} = puzzle.getCoord(index2);
+        let { x: x1, y: y1 } = puzzle.getCoord(index1);
+        let { x: x2, y: y2 } = puzzle.getCoord(index2);
 
         return (Math.abs(x1 - x2) + Math.abs(y1 - y2)) <= 1;
     }
 
     // Converts ad index into x, y coords
-    this.getCoord = function(index) {
+    this.getCoord = function (index) {
         let x = index % this.cols;
         let y = Math.floor(index / this.cols);
-        return {x, y};
+        return { x, y };
+    }
+
+    // Attempts to save the blocks in local storage
+    function saveState(blocks) {
+        if (typeof(Storage) !== undefined) {
+            localStorage.setItem("blocks", JSON.stringify(blocks));
+        }
+    }
+
+    // Attempts to fetch the previous game state if local storage is available and 'forceNew' is false.
+    // Otherwise, creates a fresh game state.
+    function getBlocks(numBlocks, forceNew) {
+        if (typeof (Storage) !== undefined && !forceNew) {
+            try {
+                let blocks = JSON.parse(localStorage.getItem("blocks"));
+                if (validateState(blocks, numBlocks)) {
+                    return blocks;
+                }    
+            }
+            catch (err) {
+                localStorage.removeItem("blocks");
+            }
+        }
+        
+        let blocks = shuffleBlocks(initGame(numBlocks));
+        saveState(blocks);
+        return blocks;
+    }
+
+    // Validate the blocks that were previously saved. Ensures the correct number of blocks is present 
+    // and only one empty slot exists.
+    function validateState(blocks, numBlocks) {
+        return blocks !== null &&
+            blocks.length === numBlocks && 
+            blocks.filter(b => b === null).length === 1;
     }
 
     // Shuffles the blocks
@@ -190,26 +226,28 @@ function Puzzle(rows, cols) {
                 swap(blocks, i, swapIndex);
             }
         }
+
         return blocks;
     }
 
     // Initializes the slide blocks with the last slot empty
-    function initBlocks(size) {
+    function initGame(size) {
         let blocks = new Array(size);
         for (let i = 0; i < size - 1; i++) {
             blocks[i] = i;
         }
+        blocks[size - 1] = null;
         return blocks;
     }
 }
 
-function newPuzzle() {
-    new PuzzleRenderer("game-canvas", conf);
+function newPuzzle(forceNew) {
+    new PuzzleRenderer("game-canvas", conf, forceNew);
 }
 
 function start() {
-    document.getElementById("new-puzzle").addEventListener("click", newPuzzle);
-    newPuzzle();
+    document.getElementById("new-puzzle").addEventListener("click", e => newPuzzle(true));
+    newPuzzle(false);
 }
 
 document.addEventListener("DOMContentLoaded", start);
