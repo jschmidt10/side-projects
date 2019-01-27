@@ -127,7 +127,7 @@ function Puzzle(rows, cols, forceNew) {
     this.rows = rows;
     this.cols = cols;
 
-    this.blocks = getBlocks(rows * cols, forceNew);
+    this.blocks = getBlocks(rows, cols, forceNew);
     this.emptyIndex = this.blocks.indexOf(null);
 
     // Checks if you won!
@@ -192,7 +192,8 @@ function Puzzle(rows, cols, forceNew) {
 
     // Attempts to fetch the previous game state if local storage is available and 'forceNew' is false.
     // Otherwise, creates a fresh game state.
-    function getBlocks(numBlocks, forceNew) {
+    function getBlocks(rows, cols, forceNew) {
+        let numBlocks = rows * cols;
         if (typeof (Storage) !== undefined && !forceNew) {
             try {
                 let blocks = JSON.parse(localStorage.getItem("blocks"));
@@ -206,8 +207,60 @@ function Puzzle(rows, cols, forceNew) {
         }
         
         let blocks = shuffleBlocks(initGame(numBlocks));
+        ensureSolveable(blocks, rows, cols);
         saveState(blocks);
         return blocks;
+    }
+
+    // Ensures that the puzzle is solveable and corrects it if not.
+    function ensureSolveable(blocks, rows, cols) {
+        let numInversions = countInversions(blocks);
+        let emptyIndex = blocks.indexOf(null);
+        let emptyBlockRow = Math.floor(emptyIndex / cols);
+
+        if (!isSolveable(rows, cols, emptyBlockRow, numInversions)) {
+            // If it's not solveable, we need to undo 1 inversion
+            for (let i = 0; i < blocks.length - 1; i++) {
+                if (blocks[i] !== null && blocks[i + 1] !== null && blocks[i] > blocks[i + 1]) {
+                    swap(blocks, i, i + 1);
+                    break;
+                }
+            }
+        }
+    }
+
+    // Given the puzzle dimensions, the row of the empty block, and the number of inversions,  
+    // determine the solveablility
+    function isSolveable(rows, cols, emptyBlockRow, numInversions) {
+        if (cols % 2 === 1) {
+            return numInversions % 2 === 0;
+        }
+        else {
+            if (numInversions % 2 === 1) {
+                return (rows - emptyBlockRow) % 2 === 0;
+            }
+            else {
+                return (rows - emptyBlockRow) % 2 === 1;
+            }
+        }
+    }
+
+    // Counts the number of inversions in the slide puzzle (for computing solvability)
+    function countInversions(blocks) {
+        let numInversions = 0;
+
+        for (let i = 0; i < blocks.length; i++) {
+            let curBlock = blocks[i];
+            if (curBlock !== null) {
+                for (let j = i + 1; j < blocks.length; j++) {
+                    if (blocks[j] !== null && curBlock > blocks[j]) {
+                        numInversions += 1;
+                    }
+                }    
+            }
+        }
+
+        return numInversions;
     }
 
     // Validate the blocks that were previously saved. Ensures the correct number of blocks is present 
