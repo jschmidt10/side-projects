@@ -1,28 +1,70 @@
-package com.github.jschmidt10.aoc.day05;
+package com.github.jschmidt10.aoc.day07;
+
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Program {
 
+    public static final int POSITION_PARAM = 0;
+    public static final int IMMEDIATE_PARAM = 1;
+
     private final int[] binary;
+
+    private ArrayBlockingQueue<Integer> input;
+    private ArrayBlockingQueue<Integer> output;
+
     private int pc = 0;
 
     public Program(int[] binary) {
         this.binary = binary;
+        this.input = new ArrayBlockingQueue<>(100);
+        this.output = new ArrayBlockingQueue<>(100);
     }
 
     public void execute() {
-        OpCode lastOp = null;
+        OpCode op = null;
 
         do {
-            lastOp = OpCode.fromStr(String.valueOf(binary[pc]));
-            Integer newPc = lastOp.execute(binary, pc);
+            op = OpCode.fromStr(String.valueOf(binary[pc]));
+            op.execute(this);
+        } while (op.instruction != Instruction.HALT);
+    }
 
-            if (newPc != null) {
-                pc = newPc;
-            }
-            else {
-                pc += lastOp.instruction.getNumParams() + 1;
-            }
+    public int getPc() {
+        return pc;
+    }
 
-        } while (lastOp.instruction != Instruction.HALT);
+    public void setPc(int pc) {
+        this.pc = pc;
+    }
+
+    public ArrayBlockingQueue<Integer> getInput() {
+        return input;
+    }
+
+    public ArrayBlockingQueue<Integer> getOutput() {
+        return output;
+    }
+
+    public int fetchArgument(int mode, int offset) {
+        switch (mode) {
+            case POSITION_PARAM:
+                return binary[binary[offset]];
+            case IMMEDIATE_PARAM:
+                return binary[offset];
+            default:
+                throw new IllegalArgumentException("Unknown ParamMode: " + mode);
+        }
+    }
+
+    public int fetch(int offset) {
+        return binary[offset];
+    }
+
+    public void store(int offset, int value) {
+        binary[offset] = value;
+    }
+
+    public Program clone() {
+        return new Program(binary);
     }
 }

@@ -1,13 +1,13 @@
-package com.github.jschmidt10.aoc.day05;
+package com.github.jschmidt10.aoc.day07;
 
 import java.util.Arrays;
 
 public class OpCode {
 
     public final Instruction instruction;
-    public final ParamMode[] paramModes;
+    public final int[] paramModes;
 
-    public OpCode(Instruction instruction, ParamMode[] paramModes) {
+    public OpCode(Instruction instruction, int[] paramModes) {
         this.instruction = instruction;
         this.paramModes = paramModes;
     }
@@ -15,10 +15,31 @@ public class OpCode {
     public static OpCode fromStr(String opCode) {
         Instruction instruction = Instruction.getByOpNum(getLastTwo(opCode));
 
-        String paramModeStr = reverse(getAllButLastTwo(opCode));
-        ParamMode[] paramModes = ParamMode.getArrayFromStr(instruction.getNumParams(), paramModeStr);
+        String paramModeStr = reverse(padZeroes(getAllButLastTwo(opCode), instruction.getNumParams()));
+        int[] paramModes = getArrayFromStr(paramModeStr);
 
         return new OpCode(instruction, paramModes);
+    }
+
+    private static String padZeroes(String s, int length) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < (length - s.length()); i++) {
+            sb.append('0');
+        }
+        sb.append(s);
+
+        return sb.toString();
+    }
+
+    private static int[] getArrayFromStr(String s) {
+        int[] paramModes = new int[s.length()];
+
+        for (int i = 0; i < paramModes.length; i++) {
+            paramModes[i] = Integer.valueOf(s.substring(i, i+1));
+        }
+
+        return paramModes;
     }
 
     private static String reverse(String s) {
@@ -33,8 +54,8 @@ public class OpCode {
         return s.length() <= 2 ? s : s.substring(s.length() - 2);
     }
 
-    public Integer execute(int[] program, int pc) {
-        return instruction.execute(program, pc, this);
+    public void execute(Program program) {
+        instruction.execute(program, this);
     }
 
     @Override

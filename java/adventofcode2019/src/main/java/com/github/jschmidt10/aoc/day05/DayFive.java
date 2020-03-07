@@ -14,7 +14,7 @@ public class DayFive {
         program.execute();
     }
 
-    private static int[] unbox(Integer[] array) {
+    public static int[] unbox(Integer[] array) {
         return Arrays.stream(array).mapToInt(x -> x).toArray();
     }
 }

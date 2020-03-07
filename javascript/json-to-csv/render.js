@@ -31,7 +31,7 @@ function pickDirectory(event, elementId) {
 function addMessage(listId, message) {
     let list = document.getElementById(listId);
     let item = document.createElement("li");
-    item.innerHTML = message;
+    item.innerText = message;
     list.appendChild(item);
 }
 
@@ -40,7 +40,7 @@ function addMessage(listId, message) {
  */
 function hasErrors() {
     let errorList = document.getElementById("errorList");
-    return errorList.innerHTML.length !== 0;
+    return errorList.children.length !== 0;
 }
 
 /*
