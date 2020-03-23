@@ -157,13 +157,13 @@ public class BigSortedSet<T> {
     }
 
     public static class Builder<T> {
-        public int maxSpillFiles = 10;
-        public int bufferSize = 2 ^ 20;
-        public int minFilesToCompact = 3;
+        private int maxSpillFiles = 10;
+        private int bufferSize = 2 ^ 20;
+        private int minFilesToCompact = 3;
 
-        public Path workDir;
-        public Comparator<T> comparator;
-        public SFileSerializer<T> serializer;
+        private Path workDir;
+        private Comparator<T> comparator;
+        private SFileSerializer<T> serializer;
 
         public Builder<T> maxSpillFiles(int maxSpillFiles) {
             this.maxSpillFiles = maxSpillFiles;
