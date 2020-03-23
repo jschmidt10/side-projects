@@ -5,6 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * An Iterator that merges multiple sorted iterators together while de-duplicating.
+ * @param <T>
+ */
 public class MergeSortIterator<T> implements Iterator<T> {
 
     private Comparator<T> comparator;
