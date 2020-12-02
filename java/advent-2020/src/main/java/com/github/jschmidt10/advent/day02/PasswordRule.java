@@ -19,7 +19,9 @@ public class PasswordRule {
    * MIN-MAX CHAR
    *
    * Example:
-   * 1-3 a     // Must contain 1 to 3 a's
+   * 1-3 a     // Must contain 1 to 3 a's (Occurrences)
+   *           //  - OR -
+   *           // Either character 1 or character 3 must be an a but not both (Positional)
    *
    * @param str The definition String
    * @return PasswordRule
