@@ -2,9 +2,9 @@ package com.github.jschmidt10.advent.day02;
 
 public class PasswordRule {
 
-  final char character;
-  final int min;
-  final int max;
+  private final char character;
+  private final int min;
+  private final int max;
 
   public PasswordRule(char character, int min, int max) {
     this.character = character;
