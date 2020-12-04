@@ -1,31 +1,40 @@
 package com.github.jschmidt10.advent.day04;
 
+import com.github.jschmidt10.advent.day04.InputFieldParser.InputField;
 import com.github.jschmidt10.advent.day04.passport.Passport;
 import com.github.jschmidt10.advent.day04.passport.Passport.Builder;
 import com.github.jschmidt10.advent.util.StringInputFile;
+import java.util.Collection;
+import java.util.List;
 
 public class Day04 {
+
+  private final InputFieldParser inputFieldParser;
 
   private int hasRequiredFields = 0;
   private int isValid = 0;
 
-  public static void main(String[] args) {
-    String filename = "input/day04/input.txt";
-    new Day04().run(filename);
+  public Day04() {
+    inputFieldParser = new InputFieldParser();
   }
 
-  private void run(String filename) {
+  public static void main(String[] args) {
+    String filename = "input/day04/input.txt";
     StringInputFile inputFile = new StringInputFile(filename);
+    new Day04().run(inputFile.getLines());
+  }
+
+  private void run(List<String> lines) {
     Passport.Builder passportBuilder = new Passport.Builder();
 
-    for (String line : inputFile.getLines()) {
-      if (line.isBlank()) {
-        // We have parsed a complete passport
+    for (String line : lines) {
+      if (isEndOfPassportFields(line)) {
         checkValidity(passportBuilder.build());
         passportBuilder.clear();
       }
       else {
-        addFields(passportBuilder, line);
+        Collection<InputField> inputFields = inputFieldParser.parseFields(line);
+        addFields(passportBuilder, inputFields);
       }
     }
 
@@ -33,6 +42,10 @@ public class Day04 {
 
     System.out.println("Part One: " + hasRequiredFields);
     System.out.println("Part Two: " + isValid);
+  }
+
+  private boolean isEndOfPassportFields(String line) {
+    return line.isBlank();
   }
 
   private void checkValidity(Passport passport) {
@@ -44,11 +57,9 @@ public class Day04 {
     }
   }
 
-  private void addFields(Builder passportBuilder, String line) {
-    String[] fieldTokens = line.split(" ");
-    for (String fieldToken : fieldTokens) {
-      String[] tokens = fieldToken.split(":");
-      passportBuilder.addField(tokens[0], tokens[1]);
+  private void addFields(Builder passportBuilder, Collection<InputField> inputFields) {
+    for (InputField inputField : inputFields) {
+      passportBuilder.addField(inputField.key, inputField.value);
     }
   }
 }
