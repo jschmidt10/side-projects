@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,5 +31,31 @@ public class StringInputFile implements InputFile<String> {
   @Override
   public Stream<String> stream() {
     return lines.stream();
+  }
+
+  public List<List<String>> getGroupedLines() {
+    List<List<String>> groupedLines = new ArrayList<>();
+
+    List<String> currentGroup = new ArrayList<>();
+
+    for (String line : getLines()) {
+      if (isGroupComplete(line)) {
+        groupedLines.add(currentGroup);
+        currentGroup = new ArrayList<>();
+      }
+      else {
+        currentGroup.add(line);
+      }
+    }
+
+    if (!currentGroup.isEmpty()) {
+      groupedLines.add(currentGroup);
+    }
+
+    return groupedLines;
+  }
+
+  private boolean isGroupComplete(String line) {
+    return line.isBlank();
   }
 }
