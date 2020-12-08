@@ -21,31 +21,25 @@ public class Day04 {
   public static void main(String[] args) {
     String filename = "input/day04/input.txt";
     StringInputFile inputFile = new StringInputFile(filename);
-    new Day04().run(inputFile.getLines());
+    new Day04().run(inputFile.getGroupedLines());
   }
 
-  private void run(List<String> lines) {
+  private void run(List<List<String>> groupedLines) {
     Passport.Builder passportBuilder = new Passport.Builder();
 
-    for (String line : lines) {
-      if (isEndOfPassportFields(line)) {
-        checkValidity(passportBuilder.build());
-        passportBuilder.clear();
-      }
-      else {
-        Collection<InputField> inputFields = inputFieldParser.parseFields(line);
-        addFields(passportBuilder, inputFields);
-      }
-    }
+    for (List<String> passportLines : groupedLines) {
+      passportBuilder.clear();
 
-    checkValidity(passportBuilder.build());
+      for (String passportLine : passportLines) {
+        addFields(passportBuilder,
+            inputFieldParser.parseFields(passportLine));
+      }
+
+      checkValidity(passportBuilder.build());
+    }
 
     System.out.println("Part One: " + hasRequiredFields);
     System.out.println("Part Two: " + isValid);
-  }
-
-  private boolean isEndOfPassportFields(String line) {
-    return line.isBlank();
   }
 
   private void checkValidity(Passport passport) {
